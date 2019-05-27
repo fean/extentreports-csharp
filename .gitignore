@@ -10,3 +10,6 @@ ExtentReports/bin/debug/
 ExtentReports.Tests/bin/
 ExtentReports.Tests/obj/
 ExtentReports.Tests/Program.cs
+
+# JetBrains
+.idea/

@@ -1,20 +1,15 @@
-﻿using Newtonsoft.Json;
-
+﻿using System;
 using System.Collections.Generic;
 
 namespace AventStack.ExtentReports.Gherkin
 {
     internal static class GherkinDialectProvider
     {
-        private static Dictionary<string, GherkinKeywords> _dialects;
-        private static GherkinKeywords _keywords;
+        private static readonly Lazy<Dictionary<string, GherkinKeywords>> _lazyDialects = new Lazy<Dictionary<string,GherkinKeywords>>(Resources.GherkinLangs.GetLanguages);
         private static string _dialect;
 
-        static GherkinDialectProvider()
-        {
-            var json = Resources.GherkinLangs.Languages;
-            _dialects = JsonConvert.DeserializeObject<Dictionary<string, GherkinKeywords>>(json);
-        }
+        private static Dictionary<string, GherkinKeywords> Dialects
+            => _lazyDialects.Value;
 
         public static string DefaultDialect { get; } = "en";
 
@@ -24,19 +19,21 @@ namespace AventStack.ExtentReports.Gherkin
         {
             get
             {
-                if (string.IsNullOrEmpty(_dialect))
-                    _dialect = DefaultDialect;
-                return _dialect;
+                return string.IsNullOrEmpty(_dialect)
+                    ? _dialect = DefaultDialect
+                    : _dialect;   
             }
             set
             {
+                var isKnownDialect = Dialects.TryGetValue(value, out var keywords);
+
+                if (!isKnownDialect)
+                {
+                    throw new InvalidGherkinLanguageException($"{value} is not a valid Gherkin dialect");
+                }
+
                 _dialect = value;
-
-                if (!_dialects.ContainsKey(_dialect))
-                    throw new InvalidGherkinLanguageException(_dialect + " is not a valid Gherkin dialect");
-
-                _keywords = _dialects[_dialect];
-                Dialect = new GherkinDialect(_dialect, _keywords);
+                Dialect = new GherkinDialect(_dialect, keywords);
             }
         }
     }

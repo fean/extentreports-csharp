@@ -18,7 +18,9 @@ namespace AventStack.ExtentReports
         internal ExtentTest(ExtentReports extent, IGherkinFormatterModel bddType, string name, string description)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("Test name cannot be null or empty");
+            {
+                throw new ArgumentNullException("Test name cannot be null or empty");
+            }
 
             Extent = extent;
             Model = new Test
@@ -36,7 +38,9 @@ namespace AventStack.ExtentReports
         public ExtentTest CreateNode<T>(string name, string description = "") where T : IGherkinFormatterModel
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("Test name cannot be null or empty");
+            {
+                throw new ArgumentNullException("Test name cannot be null or empty");
+            }
 
             Type type = typeof(T);
             var obj = (IGherkinFormatterModel)Activator.CreateInstance(type);
@@ -86,14 +90,14 @@ namespace AventStack.ExtentReports
         /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, string details, MediaEntityModelProvider provider = null)
         {
-            var evt = CreateLog(status, details);
+            var logEvent = CreateLog(status, details);
 
             if (provider != null)
             {
-                AddsScreenCapture(evt, provider.Media);
+                AddsScreenCapture(logEvent, provider.Media);
             }
 
-            return AddLog(evt);
+            return AddLog(logEvent);
         }
 
         private void AddsScreenCapture(Log evt, Media m)
@@ -113,14 +117,14 @@ namespace AventStack.ExtentReports
         /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, MediaEntityModelProvider provider = null)
         {
-            var evt = CreateLog(status);
+            var logEvent = CreateLog(status);
 
             if (provider != null)
             {
-                AddsScreenCapture(evt, provider.Media);
+                AddsScreenCapture(logEvent, provider.Media);
             }
 
-            return AddLog(evt);
+            return AddLog(logEvent);
         }
 
         /// <summary>
@@ -136,12 +140,13 @@ namespace AventStack.ExtentReports
         /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, Exception ex, MediaEntityModelProvider provider = null)
         {
-            ExceptionInfo e = new ExceptionInfo(ex);
-            Model.ExceptionInfoContext.Add(e);
+            ExceptionInfo exceptionInfo = new ExceptionInfo(ex);
+            Model.ExceptionInfoContext.Add(exceptionInfo);
             var evt = new Log(Model)
             {
-                ExceptionInfo = e
+                ExceptionInfo = exceptionInfo
             };
+            
             return AddLog(evt);
         }
 
@@ -159,7 +164,7 @@ namespace AventStack.ExtentReports
         /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, IMarkup markup)
         {
-            string details = markup.GetMarkup();
+            var details = markup.GetMarkup();
             return Log(status, details);
         }
 
@@ -179,9 +184,9 @@ namespace AventStack.ExtentReports
 
         private Log CreateLog(Status status, string details = null)
         {
-            details = details == null ? "" : details.Trim();
+            details = details?.Trim() ?? string.Empty;
 
-            Log evt = new Log(this)
+            var evt = new Log(this)
             {
                 Status = status,
                 Details = details,
@@ -451,19 +456,23 @@ namespace AventStack.ExtentReports
         /// <summary>
         /// Assigns an author
         /// </summary>
-        /// <param name="author"><see cref="Author"/></param>
+        /// <param name="authors"><see cref="Author"/></param>
         /// <returns>A <see cref="ExtentTest"/> object</returns>
-        public ExtentTest AssignAuthor(params string[] author)
+        public ExtentTest AssignAuthor(params string[] authors)
         {
-            if (author == null || author.Length == 0)
-                return this;
-
-            author.ToList().Distinct().Where(c => !string.IsNullOrEmpty(c)).ToList().ForEach(a =>
+            if (authors.Length == 0)
             {
-                var auth = new Author(a.Replace(" ", ""));
+                return this;
+            }
+        
+            var distinctAuthors = authors.Where(c => !string.IsNullOrEmpty(c)).Distinct();
+            foreach (var authorName in distinctAuthors)
+            {
+                var auth = new Author(authorName.Replace(" ", ""));
+                
                 Model.AuthorContext.Add(auth);
                 Extent.AssignAuthor(Model, auth);
-            });
+            }
 
             return this;
         }
@@ -471,19 +480,23 @@ namespace AventStack.ExtentReports
         /// <summary>
         /// Assigns a category or group
         /// </summary>
-        /// <param name="category"><see cref="Category"/></param>
+        /// <param name="categories"><see cref="Category"/></param>
         /// <returns>A <see cref="ExtentTest"/> object</returns>
-        public ExtentTest AssignCategory(params string[] category)
+        public ExtentTest AssignCategory(params string[] categories)
         {
-            if (category == null || category.Length == 0)
-                return this;
-
-            category.ToList().Distinct().Where(c => !string.IsNullOrEmpty(c)).ToList().ForEach(c =>
+            if (categories.Length == 0)
             {
-                var tag = new Category(c.Replace(" ", ""));
-                Model.CategoryContext.Add(tag);
-                Extent.AssignCategory(Model, tag);
-            });
+                return this;
+            }
+
+            var distinctCategories = categories.Where(c => !string.IsNullOrEmpty(c)).Distinct();
+            foreach (var categoryName in distinctCategories)
+            {
+                var category = new Category(categoryName.Replace(" ", ""));
+                
+                Model.CategoryContext.Add(category);
+                Extent.AssignCategory(Model, category);
+            }
 
             return this;
         }
@@ -491,19 +504,23 @@ namespace AventStack.ExtentReports
         /// <summary>
         /// Assigns a device
         /// </summary>
-        /// <param name="device"><see cref="Device"/></param>
+        /// <param name="deviceNames"><see cref="Device"/></param>
         /// <returns>A <see cref="ExtentTest"/> object</returns>
-        public ExtentTest AssignDevice(params string[] device)
+        public ExtentTest AssignDevice(params string[] deviceNames)
         {
-            if (device == null || device.Length == 0)
-                return this;
-
-            device.ToList().Distinct().Where(c => !string.IsNullOrEmpty(c)).ToList().ForEach(a =>
+            if (deviceNames.Length == 0)
             {
-                var d = new Device(a.Replace(" ", ""));
-                Model.DeviceContext.Add(d);
-                Extent.AssignDevice(Model, d);
-            });
+                return this;
+            }
+
+            var distinctDeviceNames = deviceNames.Where(c => !string.IsNullOrEmpty(c)).Distinct();
+            foreach (var deviceName in distinctDeviceNames)
+            {
+                var device = new Device(deviceName.Replace(" ", ""));
+                
+                Model.DeviceContext.Add(device);
+                Extent.AssignDevice(Model, device);
+            }
 
             return this;
         }

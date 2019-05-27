@@ -60,9 +60,12 @@ namespace AventStack.ExtentReports
             }
         }
 
-        public void AttachReporter(params IExtentReporter[] reporter)
+        public void AttachReporter(params IExtentReporter[] reporters)
         {
-            reporter.ToList().ForEach(x => Register(x));
+            foreach (var reporter in reporters)
+            {
+                Register(reporter);
+            }
         }
 
         public ExtentTest CreateTest<T>(string name, string description = "") where T : IGherkinFormatterModel

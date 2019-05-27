@@ -1,35 +1,36 @@
 ﻿using AventStack.ExtentReports.Views;
-
 using RazorEngine.Templating;
-
-using System.IO;
+using AventStack.ExtentReports.Resources;
 
 namespace AventStack.ExtentReports.Reporter.TemplateEngine
 {
     internal static class TemplateLoadService
     {
-        public static void LoadTemplate<T>(string template) where T : IViewsMarker
+        private static string GetCleanName(string templateName)
         {
-            LoadTemplate<T>(new[] { template });
+            var arr = templateName.Split('.');
+            
+            return arr.Length > 1
+                ? arr[arr.Length - 1]
+                : arr[0];
+        }
+        
+        public static void LoadTemplate<TMarker>(string template) where TMarker : IViewsMarker
+        {
+            LoadTemplate<TMarker>(new[] { template });
         }
 
-        public static void LoadTemplate<T>(string[] templates) where T : IViewsMarker
+        public static void LoadTemplate<TMarker>(string[] templateNames) where TMarker : IViewsMarker
         {
-            foreach (string template in templates)
+            var markerType = typeof(TMarker);
+            
+            foreach (var templateName in templateNames)
             {
-                string resourceName = typeof(T).Namespace + "." + template + ".cshtml";
-                using (var resourceStream = typeof(T).Assembly.GetManifestResourceStream(resourceName))
-                {
-                    using (var reader = new StreamReader(resourceStream))
-                    {
-                        if (resourceStream != null)
-                        {
-                            var arr = template.Split('.');
-                            var name = arr.Length > 1 ? arr[arr.Length - 1] : arr[0];
-                            RazorEngineManager.Instance.Razor.AddTemplate(name, reader.ReadToEnd());
-                        }
-                    }
-                }
+                var resourceName = $"{markerType.Namespace}.{templateName}.cshtml";
+                var template = ManifestResourceManager.GetString(resourceName);
+                var name = GetCleanName(templateName);
+                
+                RazorEngineManager.Instance.Razor.AddTemplate(name, template);
             }
         }
     }

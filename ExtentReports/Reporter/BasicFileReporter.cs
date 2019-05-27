@@ -1,12 +1,9 @@
-﻿using AventStack.ExtentReports.Configuration;
-using AventStack.ExtentReports.Core;
+﻿using AventStack.ExtentReports.Core;
 using AventStack.ExtentReports.Model;
 using AventStack.ExtentReports.Reporter.Configuration;
-using AventStack.ExtentReports.Reporter.Configuration.Default;
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 
 namespace AventStack.ExtentReports.Reporter
@@ -60,14 +57,7 @@ namespace AventStack.ExtentReports.Reporter
         {
             Configuration = userConfig;
 
-            foreach (SettingsProperty setting in ExtentHtmlReporterSettings.Default.Properties)
-            {
-                var key = setting.Name;
-                var value = ExtentHtmlReporterSettings.Default.Properties[setting.Name].DefaultValue.ToString();
-
-                var c = new Config(key, value);
-                MasterConfig.AddConfig(c);
-            }
+            DefaultConfig.InitializeManager(MasterConfig);
         }
 
         public override void Flush(ReportAggregates reportAggregates)
@@ -89,13 +79,9 @@ namespace AventStack.ExtentReports.Reporter
 
         private void LoadUserConfig()
         {
-            foreach (var pair in Configuration.UserConfigurationMap)
+            foreach (var userConfigOption in Configuration.UserConfigurationMap)
             {
-                var key = pair.Key;
-                var value = pair.Value;
-
-                var c = new Config(key, value);
-                MasterConfig.AddConfig(c);
+                MasterConfig.AddConfig(userConfigOption.Key, userConfigOption.Value);
             }
         }
 

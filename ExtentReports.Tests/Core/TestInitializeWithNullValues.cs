@@ -12,7 +12,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void TestNameNull()
         {
-            Assert.Throws<ArgumentException>(() => testNameNull());
+            Assert.Throws<ArgumentNullException>(() => testNameNull());
         }
 
         private void testNameNull()
@@ -23,7 +23,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestScenarioNameNull()
         {
-            Assert.Throws<ArgumentException>(() => bddTestScenarioNameNull());
+            Assert.Throws<ArgumentNullException>(() => bddTestScenarioNameNull());
         }
 
         private void bddTestScenarioNameNull()
@@ -35,7 +35,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestScenarioNameEmpty()
         {
-            Assert.Throws<ArgumentException>(() => bddTestScenarioNameEmpty());
+            Assert.Throws<ArgumentNullException>(() => bddTestScenarioNameEmpty());
         }
 
         private void bddTestScenarioNameEmpty()
@@ -47,7 +47,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestStepNameNull()
         {
-            Assert.Throws<ArgumentException>(() => bddTestStepNameNull());
+            Assert.Throws<ArgumentNullException>(() => bddTestStepNameNull());
         }
 
         private void bddTestStepNameNull()
@@ -60,7 +60,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestStepNameEmpty()
         {
-            Assert.Throws<ArgumentException>(() => bddTestStepNameEmpty());
+            Assert.Throws<ArgumentNullException>(() => bddTestStepNameEmpty());
         }
 
         private void bddTestStepNameEmpty()
@@ -73,7 +73,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestScenarioNameNullGherkinKeyword()
         {
-            Assert.Throws<ArgumentException>(() => bddTestScenarioNameNullGherkinKeyword());
+            Assert.Throws<ArgumentNullException>(() => bddTestScenarioNameNullGherkinKeyword());
         }
 
         private void bddTestScenarioNameNullGherkinKeyword()
@@ -85,7 +85,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestScenarioNameEmptyGherkinKeyword()
         {
-            Assert.Throws<ArgumentException>(() => bddTestScenarioNameEmptyGherkinKeyword());
+            Assert.Throws<ArgumentNullException>(() => bddTestScenarioNameEmptyGherkinKeyword());
         }
         
         private void bddTestScenarioNameEmptyGherkinKeyword()
@@ -97,7 +97,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestStepNameNullGherkinKeyword()
         {
-            Assert.Throws<ArgumentException>(() => bddTestStepNameNullGherkinKeyword());
+            Assert.Throws<ArgumentNullException>(() => bddTestStepNameNullGherkinKeyword());
         }
 
         private void bddTestStepNameNullGherkinKeyword()
@@ -110,7 +110,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void BddTestStepNameEmptyGherkinKeyword()
         {
-            Assert.Throws<ArgumentException>(() => bddTestStepNameEmptyGherkinKeyword());
+            Assert.Throws<ArgumentNullException>(() => bddTestStepNameEmptyGherkinKeyword());
         }
 
         private void bddTestStepNameEmptyGherkinKeyword()
@@ -123,7 +123,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void TestNameEmpty()
         {
-            Assert.Throws<ArgumentException>(() => testNameEmpty());
+            Assert.Throws<ArgumentNullException>(() => testNameEmpty());
         }
 
         private void testNameEmpty()
@@ -134,7 +134,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void NodeNameNull()
         {
-            Assert.Throws<ArgumentException>(() => nodeNameNull());
+            Assert.Throws<ArgumentNullException>(() => nodeNameNull());
         }
         
         private void nodeNameNull()
@@ -149,7 +149,7 @@ namespace AventStack.ExtentReports.Tests.APITests
         [Test]
         public void NodeNameEmpty()
         {
-            Assert.Throws<ArgumentException>(() => nodeNameEmpty());
+            Assert.Throws<ArgumentNullException>(() => nodeNameEmpty());
         }
 
         private void nodeNameEmpty()

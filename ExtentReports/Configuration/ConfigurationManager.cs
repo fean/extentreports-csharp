@@ -5,35 +5,29 @@ namespace AventStack.ExtentReports.Configuration
 {
     public class ConfigurationManager
     {
-        public List<Config> Configuration { get; internal set; } = new List<Config>();
+        private Dictionary<string, string> Configuration { get; } = new Dictionary<string, string>();
         
         public string GetValue(string k)
         {
-            var c = Configuration.Where(x => x.Key.Equals(k));
+            var hasConfig = Configuration.TryGetValue(k, out var config);
 
-            if (c.Count() > 0)
-                return c.First().Value;
-
-            return null;
+            return hasConfig
+                ? config
+                : null;
+        }
+        
+        public void AddConfig(string key, string value) {
+            Configuration.Add(key, value);
         }
 
-        public void AddConfig(Config c)
+        private bool ContainsConfig(string key)
         {
-            if (ContainsConfig(c.Key))
-                RemoveConfig(c.Key);
-
-            Configuration.Add(c);
+            return Configuration.ContainsKey(key);
         }
 
-        private bool ContainsConfig(string k)
+        private void RemoveConfig(string key)
         {
-            return Configuration.Where(x => x.Key.Equals(k)).Count() == 1;
-        }
-
-        private void RemoveConfig(string k)
-        {
-            var c = Configuration.Where(x => x.Key.Equals(k)).First();
-            Configuration.Remove(c);
+            Configuration.Remove(key);
         }
     }
 }

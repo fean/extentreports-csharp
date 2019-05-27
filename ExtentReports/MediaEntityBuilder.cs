@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using System.Threading;
 
 using AventStack.ExtentReports.Model;
@@ -24,7 +24,9 @@ namespace AventStack.ExtentReports
         public static MediaEntityBuilder CreateScreenCaptureFromPath(string path, string title = null)
         {
             if (string.IsNullOrEmpty(path))
-                throw new IOException("ScreenCapture path cannot be null or empty.");
+            {
+                throw new ArgumentNullException("ScreenCapture path cannot be null or empty.");
+            }
 
             return CreateScreenCapture(path, title, false);
         }
@@ -38,7 +40,9 @@ namespace AventStack.ExtentReports
         public static MediaEntityBuilder CreateScreenCaptureFromBase64String(string base64String, string title = null)
         {
             if (string.IsNullOrEmpty(base64String))
-                throw new IOException("Base64 string cannot be null or empty.");
+            {
+                throw new ArgumentNullException("Base64 string cannot be null or empty.");
+            }
 
             return CreateScreenCapture(base64String, null, true);
         }
@@ -51,9 +55,13 @@ namespace AventStack.ExtentReports
             };
 
             if (isBase64)
+            {
                 sc.Base64String = pathOrBase64String;
+            }
             else
+            {
                 sc.Path = pathOrBase64String;
+            }
 
             _media = new ThreadLocal<Media>
             {
